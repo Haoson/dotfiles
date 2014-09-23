@@ -1,0 +1,10 @@
+[color]
+	status = auto
+	diff = auto
+	branch = auto
+	interactive = auto
+[user]
+	name = Haoson
+	email = haoweiqinghason@gmail.com
+[core]
+	editor = vim
