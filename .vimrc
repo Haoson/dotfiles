@@ -205,7 +205,7 @@ func SetTitle()
 "        call setline(1,"<head><meta charset=\"UTF-8\"></head>")
     else 
         call setline(1, "/*************************************************************************") 
-        call append(line("."), "    > File Name: ".expand("%")) 
+        call append(line("."), "  > File Name: ".expand("%")) 
         call append(line(".")+1, "  > Author:Haoson ") 
         call append(line(".")+2, "  > Created Time: ".strftime("%c")) 
         call append(line(".")+3, " ************************************************************************/") 
@@ -221,9 +221,9 @@ func SetTitle()
         call append(line(".")+6, "")
     endif
     if expand("%:e") == 'h'
-        call append(line(".")+5, "#ifndef _".toupper(expand("%:r"))."_H")
-        call append(line(".")+6, "#define _".toupper(expand("%:r"))."_H")
-        call append(line(".")+8, "#endif")
+        call append(line(".")+5, "#ifndef ".toupper(expand("%:r"))."_H_")
+        call append(line(".")+6, "#define ".toupper(expand("%:r"))."_H_")
+        call append(line(".")+7, "#endif")
     endif
     if &filetype == 'java'
         call append(line(".")+5,"public class ".expand("%:r"))
@@ -377,3 +377,19 @@ nnoremap <Leader>sb :GrepBuffer -ir<CR><CR>
 :inoremap [ []<ESC>i
 :inoremap ' ''<ESC>i
 :inoremap " ""<ESC>i
+:inoremap < <><ESC>i
+:inoremap << <<<ESC>a
+
+
+"代码折叠。常用命令：
+"1）za  打开/关闭在光标下的折叠
+"2）zA  循环地打开/关闭光标下的折叠
+"3）zo  打开 (open) 在光标下的折叠
+"4）zO  循环打开 (Open) 光标下的折叠
+"5）zc  关闭 (close) 在光标下的折叠
+"6）zC  循环关闭 (Close) 在光标下的所有折叠
+"7）zM  关闭所有折叠
+"8）zR  打开所有的折叠
+set foldmethod=syntax " 用语法高亮来定义折叠
+set foldlevel=100 " 启动vim时不要自动折叠代码
+set foldcolumn=2 " 设置折叠栏宽度
