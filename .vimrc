@@ -238,9 +238,9 @@ let mapleader = ","
 let g:mapleader = ","
 
 " 设置快捷键将选中文本块复制至系统剪贴板
-vnoremap <Leader>y "+y
+""vmap <Leader>y "+y
 " 设置快捷键将系统剪贴板内容粘贴至 vim
-nmap <Leader>p "+p
+""nmap <Leader>p "+p
 " 定义快捷键关闭当前分割窗口
 nmap <Leader>q :q<CR>
 " 定义快捷键保存当前窗口内容
@@ -393,3 +393,27 @@ nnoremap <Leader>sb :GrepBuffer -ir<CR><CR>
 set foldmethod=syntax " 用语法高亮来定义折叠
 set foldlevel=100 " 启动vim时不要自动折叠代码
 set foldcolumn=2 " 设置折叠栏宽度
+
+set pastetoggle=<F10>
+"transfer/read and write one block of text between vim sessions
+" Usage:
+" " `from' session:
+" " ma
+" " move to end-of-block
+" " <leader>y
+" "
+" " `to' session:
+" " move to where I want block inserted
+" " <leader>p
+" "
+if has("unix")
+    nmap <Leader>p  :r $HOME/.vimxfer<CR>
+    nmap <Leader>y :'a,.w! $HOME/.vimxfer<CR>
+    vmap <Leader>p  c<esc>:r $HOME/.vimxfer<CR>
+    vmap <Leader>y :w! $HOME/.vimxfer<CR>
+else
+    nmap <Leader>p  :r c:/.vimxfer<CR>
+    nmap <Leader>y :'a,.w! c:/.vimxfer<CR>
+    vmap <Leader>p  c<esc>:r c:/.vimxfer<cr>
+    vmap <Leader>y :w! c:/.vimxfer<CR>
+endif
