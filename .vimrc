@@ -42,6 +42,8 @@ Plugin 'grep.vim'
 
 "Quickly locate files, buffers, mrus, ... in large project
 Plugin 'Yggdroot/LeaderF'
+"source code browser
+Plugin 'taglist.vim'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 
@@ -295,7 +297,29 @@ let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
 let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
 
 "YCM插件配置信息
-let g:ycm_global_ycm_extra_conf = '/home/haoson/.ycm_extra_conf.py'
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif "离开插入模式后自动关闭预览窗口
+inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"    "回车即选中当前项
+"上下左右键的行为 会显示其他信息
+inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+
+let g:ycm_confirm_extra_conf=0 "关闭加载.ycm_extra_conf.py提示
+
+let g:ycm_collect_identifiers_from_tags_files=1 " 开启 YCM 基于标签引擎
+let g:ycm_min_num_of_chars_for_completion=2 " 从第2个键入字符就开始罗列匹配项
+let g:ycm_cache_omnifunc=0  " 禁止缓存匹配项,每次都重新生成匹配项
+let g:ycm_seed_identifiers_with_syntax=1    " 语法关键字补全
+nnoremap <F5> :YcmForceCompileAndDiagnostics<CR>    "force recomile with syntastic
+"nnoremap <leader>lo :lopen<CR> "open locationlist
+"nnoremap <leader>lc :lclose<CR>    "close locationlist
+"在字符串输入中也能补全
+let g:ycm_complete_in_strings = 1
+"注释和字符串中的文字也会被收入补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
+
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_key_invoke_completion = '<C-k>'
 " YCM 补全菜单配色
 " 菜单
@@ -314,17 +338,11 @@ let g:ycm_complete_in_comments=1
 inoremap <leader><Leader> <C-x><C-o>
 " 补全内容不以分割子窗口形式出现，只显示补全列表
 set completeopt-=preview
-" 从第一个键入字符就开始罗列匹配项
-let g:ycm_min_num_of_chars_for_completion=1
-" 禁止缓存匹配项，每次都重新生成匹配项
-let g:ycm_cache_omnifunc=0
-" 语法关键字补全            
-let g:ycm_seed_identifiers_with_syntax=1
 
-map <F3> :YcmDiags <CR>
+map <leader>d :YcmDiags <CR>
 map <F6> :YcmCompleter GoToDefinitionElseDeclaration<CR>
-" 使用 NERDTree 插件查看工程文件。设置快捷键F2打开/关闭插件
-nmap <F2> :NERDTreeToggle<CR>
+" 使用 NERDTree 插件查看工程文件。设置快捷键F9打开/关闭插件
+nmap <F9> :NERDTreeToggle<CR>
 " 设置NERDTree子窗口宽度
 let NERDTreeWinSize=32
 " 设置NERDTree子窗口位置
@@ -342,6 +360,18 @@ map <Leader>bl :MBEToggle<cr>
 " buffer 切换快捷键
 map <Leader>bn :MBEbn<cr>
 map <Leader>bp :MBEbp<cr>
+
+"taglist配置
+let Tlist_Ctags_Cmd = '/usr/bin/ctags'
+let Tlist_Show_One_File = 1            "不同时显示多个文件的tag，只显示当前文件的
+let Tlist_Exit_OnlyWindow = 1          "如果taglist窗口是最后一个窗口，则退出vim
+let Tlist_Use_Right_Window = 1         "在右侧窗口中显示taglist窗口
+let Tlist_WinWidth = 32                "设置窗体宽度
+let Tlist_GainFocus_On_ToggleOpen = 1  "taglist窗口打开时，获取焦点 
+"将F9设置为打开/关闭taglist窗口的快捷键
+map <leader>tt :TlistToggle<cr>
+"在taglist窗口和源文件窗口切换焦点的快捷键映射
+map <leader>ww <C-w><C-w>               
 
 " 设置环境保存项
 set sessionoptions="blank,buffers,globals,localoptions,tabpages,sesdir,folds,help,options,resize,winpos,winsize"
@@ -396,16 +426,6 @@ set foldcolumn=2 " 设置折叠栏宽度
 
 set pastetoggle=<F10>
 "transfer/read and write one block of text between vim sessions
-" Usage:
-" " `from' session:
-" " ma
-" " move to end-of-block
-" " <leader>y
-" "
-" " `to' session:
-" " move to where I want block inserted
-" " <leader>p
-" "
 if has("unix")
     nmap <Leader>p  :r $HOME/.vimxfer<CR>
     nmap <Leader>y :'a,.w! $HOME/.vimxfer<CR>
