@@ -44,6 +44,8 @@ Plugin 'grep.vim'
 Plugin 'Yggdroot/LeaderF'
 "source code browser
 Plugin 'taglist.vim'
+"Inserts matching bracket, paren, brace or quote
+Plugin 'AutoClose'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 
@@ -400,16 +402,6 @@ let g:syntastic_enable_balloons = 1
 nnoremap <Leader>sp :Grep -ir<CR><CR><CR>
 " " 使用 Grep.vim 插件在工程内全局查找，设置快捷键。快捷键速记法：search in buffer
 nnoremap <Leader>sb :GrepBuffer -ir<CR><CR>
-
-"括号自动补全
-:inoremap ( ()<ESC>i
-:inoremap { {}<ESC>i
-:inoremap [ []<ESC>i
-:inoremap ' ''<ESC>i
-:inoremap " ""<ESC>i
-:inoremap < <><ESC>i
-:inoremap << <<<ESC>a
-
 
 "代码折叠。常用命令：
 "1）za  打开/关闭在光标下的折叠
