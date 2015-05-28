@@ -10,7 +10,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 "The ultimate vim statusline utility
-Plugin 'Lokaltog/vim-powerline'
+"Plugin 'Lokaltog/vim-powerline'
 "Beautiful dual light/dark, selective contrast, GUI/256/16 colorscheme
 Plugin  'altercation/vim-colors-solarized'
 "Improved C++ STL syntax highlighting
@@ -30,24 +30,30 @@ Plugin 'The-NERD-Commenter'
 Plugin 'SirVer/ultisnips' 
 Plugin 'honza/vim-snippets'
 
-Plugin 'Valloric/YouCompleteMe'
+"Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/syntastic'
 
 Plugin 'scrooloose/nerdtree'
 
+
+Plugin 'wesleyche/Trinity'
+Plugin 'wesleyche/SrcExpl'
 "Elegant buffer explorer - takes very little screen space
-Plugin 'fholgado/minibufexpl.vim'
+"Plugin 'fholgado/minibufexpl.vim'
+
 "Grep search tools integration with Vim
 Plugin 'grep.vim'
 
 "Quickly locate files, buffers, mrus, ... in large project
-Plugin 'Yggdroot/LeaderF'
+"Plugin 'Yggdroot/LeaderF'
 "source code browser
 Plugin 'taglist.vim'
 "Inserts matching bracket, paren, brace or quote
 Plugin 'AutoClose'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
+
+Plugin 'bling/vim-airline'
 
 " plugin on GitHub repo
 "Plugin 'tpope/vim-fugitive'
@@ -132,6 +138,9 @@ let g:solarized_termcolors=256
 let g:solarized_contrast="high"
 let g:solarized_visibility="high"
 
+
+set mouse=a
+
 "设置颜色方案使用color solarized
 "set background=light
 if has('gui_running')
@@ -210,7 +219,7 @@ func SetTitle()
     else 
         call setline(1, "/*************************************************************************") 
         call append(line("."), "  > File Name: ".expand("%")) 
-        call append(line(".")+1, "  > Author:Haoson ") 
+        call append(line(".")+1, "  > Author:victorhao ") 
         call append(line(".")+2, "  > Created Time: ".strftime("%c")) 
         call append(line(".")+3, " ************************************************************************/") 
         call append(line(".")+4, "")
@@ -275,7 +284,7 @@ set cursorcolumn
 " 总是显示状态栏
 set laststatus=2
 " 设置状态栏主题风格
-let g:Powerline_colorscheme='solarized256'
+"let g:Powerline_colorscheme='solarized256'
 
 "Indent_Guide插件配置信息
 "随 vim 自启动
@@ -313,7 +322,8 @@ let g:ycm_collect_identifiers_from_tags_files=1 " 开启 YCM 基于标签引擎
 let g:ycm_min_num_of_chars_for_completion=2 " 从第2个键入字符就开始罗列匹配项
 let g:ycm_cache_omnifunc=0  " 禁止缓存匹配项,每次都重新生成匹配项
 let g:ycm_seed_identifiers_with_syntax=1    " 语法关键字补全
-nnoremap <F5> :YcmForceCompileAndDiagnostics<CR>    "force recomile with syntastic
+"force recomile with syntastic
+nnoremap <F5> :YcmForceCompileAndDiagnostics<CR>   
 "nnoremap <leader>lo :lopen<CR> "open locationlist
 "nnoremap <leader>lc :lclose<CR>    "close locationlist
 "在字符串输入中也能补全
@@ -345,10 +355,12 @@ map <leader>d :YcmDiags <CR>
 map <F6> :YcmCompleter GoToDefinitionElseDeclaration<CR>
 " 使用 NERDTree 插件查看工程文件。设置快捷键F9打开/关闭插件
 nmap <F9> :NERDTreeToggle<CR>
+"let NERDTreeMouseMode=3
+let NERDTreeDirArrows=0
 " 设置NERDTree子窗口宽度
-let NERDTreeWinSize=32
+let NERDTreeWinSize=24
 " 设置NERDTree子窗口位置
-let NERDTreeWinPos="right"
+let NERDTreeWinPos="left"
 " 显示隐藏文件
 let NERDTreeShowHidden=1
 " NERDTree 子窗口中不显示冗余帮助信息
@@ -356,24 +368,47 @@ let NERDTreeMinimalUI=1
 " 删除文件时自动删除文件对应 buffer
 let NERDTreeAutoDeleteBuffer=1
 
+let NERDTreeIgnore=['\~$','\.swap$']
+let NERDTreeIgnore+=['\.files$','\.out$', 'tags']
+let NERDTreeIgnore+=['\.d$', '\.o$', '\.a$']
+let NERDTreeIgnore+=['\.in$', '\.ac$', '\.am$', '\.status$', '\.m4$','\.cache$[[dir]]']
+let NERDTreeIgnore+=['\.sln$', '\.ncb$', '\.suo$', '\.user$', '\..*proj$']
+"au VimEnter * NERDTree 
+au VimEnter * :wincmd l
+au BufEnter NERD_tree* call s:CloseIfOnlyNerdTreeLeft()
+function! s:CloseIfOnlyNerdTreeLeft()
+    if exists("t:NERDTreeBufName")
+        if bufwinnr(t:NERDTreeBufName) != -1
+            if winnr("$") == 1
+                qa
+            elseif winnr("$") == 2
+                if bufwinnr("__Tag_List__") != -1
+                    qa
+                endif
+            endif
+        endif
+    endif
+endfunction
+
 " MiniBufExplorer插件配置信息
 " 显示/隐藏 MiniBufExplorer 窗口
-map <Leader>bl :MBEToggle<cr>
+" map <Leader>bl :MBEToggle<cr>
 " buffer 切换快捷键
-map <Leader>bn :MBEbn<cr>
-map <Leader>bp :MBEbp<cr>
+" map <Leader>bn :MBEbn<cr>
+" map <Leader>bp :MBEbp<cr>
 
 "taglist配置
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 let Tlist_Show_One_File = 1            "不同时显示多个文件的tag，只显示当前文件的
 let Tlist_Exit_OnlyWindow = 1          "如果taglist窗口是最后一个窗口，则退出vim
-let Tlist_Use_Right_Window = 1         "在右侧窗口中显示taglist窗口
-let Tlist_WinWidth = 32                "设置窗体宽度
+"let Tlist_Use_Right_Window = 1         "在右侧窗口中显示taglist窗口
+let Tlist_Use_Left_Window = 1         "在右侧窗口中显示taglist窗口
+let Tlist_WinWidth = 24                "设置窗体宽度
 let Tlist_GainFocus_On_ToggleOpen = 1  "taglist窗口打开时，获取焦点 
 "将F9设置为打开/关闭taglist窗口的快捷键
 map <leader>tt :TlistToggle<cr>
 "在taglist窗口和源文件窗口切换焦点的快捷键映射
-map <leader>ww <C-w><C-w>               
+"map <leader>ww <C-w><C-w>               
 
 " 设置环境保存项
 set sessionoptions="blank,buffers,globals,localoptions,tabpages,sesdir,folds,help,options,resize,winpos,winsize"
@@ -389,11 +424,11 @@ nmap <Leader>m :!rm -rf main<CR>:wa<CR>:make<CR><CR>:cw<CR>
 
 """"""""syntastic""""""""""""
 let g:syntastic_check_on_open = 1
-let g:syntastic_cpp_include_dirs = ['/usr/include/']
+let g:syntastic_cpp_include_dirs = ['/usr/include/','/usr/include/c++/4.9.2/']
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_cpp_check_header = 1
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = '-std=c++11 -stdlib=libc++'
+let g:syntastic_cpp_compiler = 'g++'
+let g:syntastic_cpp_compiler_options = '-std=c++11 -stdlib=libstdc++'
 "whether to show balloons
 let g:syntastic_enable_balloons = 1
 
@@ -429,3 +464,111 @@ else
     vmap <Leader>p  c<esc>:r c:/.vimxfer<cr>
     vmap <Leader>y :w! c:/.vimxfer<CR>
 endif
+
+
+
+" airline
+let g:airline_theme="bubblegum"
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#left_sep='>'
+let g:airline#extensions#tabline#left_alt_sep='>'
+let g:airline#extensions#tabline#right_sep='<'
+let g:airline#extensions#tabline#right_alt_sep='<'
+let g:airline#extensions#tabline#show_tab_nr=1
+let g:airline#extensions#tagbar#enabled = 1
+
+"enable/disable displaying index of the buffer.
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+
+
+
+" 映射切换buffer的键位
+nnoremap <Leader>bn :bn<cr>
+nnoremap <Leader>bp :bp<cr>
+
+
+" delete current buffer
+map <silent> <leader>dc :call DeleteCurrentBuffer()<CR>
+map <silent> <leader>do :call DeleteOtherBuffer()<CR>
+map <silent> <leader>da :call DeleteAllBuffer()<CR>
+function! DeleteCurrentBuffer()
+    let current = bufnr('%')
+    bp
+    exe 'bd '.current
+endfunction
+
+function! DeleteOtherBuffer()
+    let current = bufnr('%')
+    let last = bufnr('$')
+    for i in range(1, last)
+        if bufexists(i) && buflisted(i) && i != current
+            exe 'bd '.i
+        endif
+    endfor
+endfunction
+
+function! DeleteAllBuffer()
+    let last = bufnr('$')
+    for i in range(1, last)
+        if bufexists(i) && buflisted(i) 
+            exe 'bd '.i
+        endif
+    endfor
+endfunction
+
+" // The switch of the Source Explorer 
+nmap <F8> :SrcExplToggle<CR> 
+
+" // Set the height of Source Explorer window 
+let g:SrcExpl_winHeight = 6 
+
+" // Set 100 ms for refreshing the Source Explorer 
+let g:SrcExpl_refreshTime = 100 
+
+" // Set "Enter" key to jump into the exact definition context 
+let g:SrcExpl_jumpKey = "<ENTER>" 
+
+" // Set "Space" key for back from the definition context 
+let g:SrcExpl_gobackKey = "<SPACE>" 
+
+" // In order to avoid conflicts, the Source Explorer should know what plugins
+" // except itself are using buffers. And you need add their buffer names into
+" // below listaccording to the command ":buffers!"
+let g:SrcExpl_pluginList = [ 
+        \ "__Tag_List__", 
+        \ "_NERD_tree_" ,
+        \ "Source_Explorer" 
+    \ ] 
+
+" // Enable/Disable the local definition searching, and note that this is not 
+" // guaranteed to work, the Source Explorer doesn't check the syntax for now. 
+" // It only searches for a match with the keyword according to command 'gd' 
+let g:SrcExpl_searchLocalDef = 1 
+
+" // Do not let the Source Explorer update the tags file when opening 
+let g:SrcExpl_isUpdateTags = 0 
+
+" // Use 'Exuberant Ctags' with '--sort=foldcase -R .' or '-L cscope.files' to 
+" // create/update the tags file 
+let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ." 
+
+" // Set "<F12>" key for updating the tags file artificially 
+let g:SrcExpl_updateTagsKey = "<F12>" 
+
+" // Set "<F3>" key for displaying the previous definition in the jump list 
+let g:SrcExpl_prevDefKey = "<F3>" 
+
+" // Set "<F4>" key for displaying the next definition in the jump list 
+let g:SrcExpl_nextDefKey = "<F4>" 
+ 
+" Open and close all the three plugins on the same time 
+nmap <F8>  :TrinityToggleAll<CR> 

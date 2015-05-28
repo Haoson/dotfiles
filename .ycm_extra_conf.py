@@ -2,7 +2,6 @@ import os
 import ycm_core 
 flags = [ 
         '-std=c++11', 
-        '-stdlib=libc++', 
         '-Werror', 
         '-Weverything', 
         '-Wno-deprecated-declarations', 
@@ -14,31 +13,18 @@ flags = [
         '-Wno-exit-time-destructors', 
         '-Wno-missing-prototypes', 
         '-Wno-padded', 
-        '-DUSE_CLANG_COMPLETER',
         '-x', 
         'c++', 
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/BoostParts',
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/llvm/include',
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/llvm/tools/clang/include',
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/ClangCompleter',
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/tests/gmock/gtest',
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/tests/gmock/gtest/include',
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/tests/gmock',
-        '-isystem',
-        '/home/haoson/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/tests/gmock/include',
         '-I', 
         '.', 
+        '-I', 
+        '/usr/local/tsf4g_release/include/',
+        '-I', 
+        '/usr/local/tsf4g_release/include/apps/',
         '-isystem', 
         '/usr/include/', 
         '-isystem', 
-        '/usr/include/c++/v1/'
+        '/usr/include/c++/4.9.2/'
         ] 
 compilation_database_folder = '' 
 if os.path.exists( compilation_database_folder ):
